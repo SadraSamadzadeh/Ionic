@@ -19,6 +19,9 @@ const Home: React.FC = () => {
         <IonItem button href="/parties">
           <IonLabel>Go To Parties</IonLabel>
         </IonItem>
+        <IonItem button href="/play">
+          <IonLabel>Go To Playground</IonLabel>
+        </IonItem>
       </IonContent>
     </IonPage>
   );
