@@ -46,9 +46,6 @@ const App: React.FC = () => (
         <Route exact path="/parties">
         <PeopleList />
         </Route>
-        <Route exact path="/play">
-        <Playground></Playground>
-        </Route>
         <Route exact path="/">
           <Redirect to="/home" />
         </Route>
