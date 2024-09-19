@@ -1,5 +1,6 @@
 import React from 'react';
 import {add} from 'ionicons/icons'
+import { useEffect, useState } from 'react';
 import {
   IonCard,
   IonCardContent,
@@ -15,7 +16,14 @@ import {
 
 import './Card.css';
 
-function Example({ parties }) {
+function Card({ parties }) {
+  // Load the parties from local storage when the component mounts
+  const deleteParty = (index) => {
+    const id = index + 1;
+    const updatedPartyList = parties.filter(party => party.id !== id);
+    localStorage.setItem('partyList', JSON.stringify(updatedPartyList));
+    console.log(JSON.parse(localStorage.getItem('partyList')));
+  }
   return (
     <IonCard>
       <IonCardHeader>
@@ -27,8 +35,8 @@ function Example({ parties }) {
         {parties.map((item, index) => (
             <IonItem key={index}>
             <IonLabel>{item.name}</IonLabel>
-            <IonButton href={'/details/' + item.name} slot='end' className='forward-button'>Details</IonButton>
-            <IonButton className='delete-button'>Delete</IonButton>
+            <IonButton href={'/details/' + (index + 1)} slot='end' className='forward-button'>Details</IonButton>
+            <IonButton onClick={() => deleteParty(index)} className='delete-button'>Delete</IonButton>
             </IonItem>
         ))}
         </IonList>
@@ -38,4 +46,4 @@ function Example({ parties }) {
   );
 
 }
-export default Example;
+export default Card;

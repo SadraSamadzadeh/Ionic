@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Contacts } from "@capacitor-community/contacts";
 import Card from '../components/Card';
 import Popup from '../components/Popup';
-import { add } from 'ionicons/icons';
 import './PartyList.css';
 
 const Partylist: React.FC = () => {
@@ -54,7 +53,7 @@ const Partylist: React.FC = () => {
    
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("handleSubmitAddingParties")
     if (party.name && party.description && party.date) {
       const id = partyList.length + 1;
@@ -97,7 +96,7 @@ const Partylist: React.FC = () => {
                 </IonSelectOption>
               ))}
             </IonSelect>
-          <IonButton onClick={handleSubmit}>Add</IonButton>
+          <IonButton className='add-popup' onClick={handleSubmit}>Add</IonButton>
         </Popup>
         
       </IonContent>
