@@ -1,3 +1,6 @@
-ion-button {
-    width: 100px;
+.add-button::part(native) {
+    border-radius: 0px;
+}
+.add-button {
+    width: 100%;
 }

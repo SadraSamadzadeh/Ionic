@@ -48,7 +48,7 @@ const App: React.FC = () => (
         <PeopleList />
         </Route>
         <Route exact path="/">
-          <Redirect to="/home" />
+          <Redirect to="/parties"/>
         </Route>
         <Route exact path="/details/:name" component={PartyDetails}>
         </Route>

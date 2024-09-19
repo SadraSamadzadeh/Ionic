@@ -1,8 +1,14 @@
-ion-item {
-    --padding-start: 0;
-    cursor: pointer;
-  }
-  ion-button {
-    width: 50px;
-  }
+.main-container {
+  display: flex;
+  border-radius: 10px;
+  box-shadow: 0px 10px -14px 14px #FFF;
+  background-color: white;
+  
+}
+.delete-button::part(native) {
+  background-color: red;
+}
+
+
+
 

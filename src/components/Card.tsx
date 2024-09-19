@@ -15,7 +15,7 @@ import {
 
 import './Card.css';
 
-function Example({ parties, children}) {
+function Example({ parties }) {
   return (
     <IonCard>
       <IonCardHeader>
@@ -23,12 +23,12 @@ function Example({ parties, children}) {
         <IonCardSubtitle>Parties available in the next 30 days</IonCardSubtitle>
       </IonCardHeader>
       <IonCardContent>
-        {children}
         <IonList>
         {parties.map((item, index) => (
-            <IonItem button={true} key={index} href='/people' >
+            <IonItem key={index}>
             <IonLabel>{item.name}</IonLabel>
-            <IonButton href={'/details/' + item.name} slot='end'>More Details</IonButton>
+            <IonButton href={'/details/' + item.name} slot='end' className='forward-button'>Details</IonButton>
+            <IonButton className='delete-button'>Delete</IonButton>
             </IonItem>
         ))}
         </IonList>

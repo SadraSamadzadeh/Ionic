@@ -57,7 +57,9 @@ const Partylist: React.FC = () => {
   const handleSubmit = () => {
     console.log("handleSubmitAddingParties")
     if (party.name && party.description && party.date) {
-      const updatedPartyList = [...partyList, { ...party, selectedContacts }];
+      const id = partyList.length + 1;
+      const newParty = {id, ...party, selectedContacts};
+      const updatedPartyList = [...partyList, newParty];
       setPartyList(updatedPartyList);
       localStorage.setItem('partyList', JSON.stringify(updatedPartyList));
 
@@ -80,12 +82,10 @@ const Partylist: React.FC = () => {
       </IonHeader>
       <IonContent fullscreen>
         <Card parties={partyList}>
-          <IonButton onClick={openModal} >
-          <IonIcon slot='start' icon={add}></IonIcon>
+          </Card> 
+        <IonButton className='add-button' onClick={openModal} >
           Add
         </IonButton>
-          </Card> 
-        
         <Popup isOpen={isModalOpen} onClose={closeModal} title="Create Party" buttonText="Close Modal">
           <IonInput name='name' label='Name' value={party.name} onIonChange={handleChange}></IonInput>
           <IonInput name='description' label='Description' value={party.description} onIonChange={handleChange}></IonInput>
@@ -99,6 +99,7 @@ const Partylist: React.FC = () => {
             </IonSelect>
           <IonButton onClick={handleSubmit}>Add</IonButton>
         </Popup>
+        
       </IonContent>
     </IonPage>
   );
