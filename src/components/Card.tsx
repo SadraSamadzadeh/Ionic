@@ -15,7 +15,7 @@ import {
 
 import './Card.css';
 
-function Example({ parties}) {
+function Example({ parties, children}) {
   return (
     <IonCard>
       <IonCardHeader>
@@ -23,17 +23,16 @@ function Example({ parties}) {
         <IonCardSubtitle>Parties available in the next 30 days</IonCardSubtitle>
       </IonCardHeader>
       <IonCardContent>
+        {children}
         <IonList>
         {parties.map((item, index) => (
             <IonItem button={true} key={index} href='/people' >
-            <IonThumbnail slot="start">
-            <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
-            </IonThumbnail>
             <IonLabel>{item.name}</IonLabel>
-            <IonLabel>{item.description}</IonLabel>
+            <IonButton href={'/details/' + item.name} slot='end'>More Details</IonButton>
             </IonItem>
         ))}
         </IonList>
+        
       </IonCardContent>
     </IonCard>
   );

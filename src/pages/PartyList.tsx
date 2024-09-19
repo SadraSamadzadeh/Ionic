@@ -1,12 +1,14 @@
-import { IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar, IonInput, IonButton, IonItem, IonLabel } from '@ionic/react';
+import { IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar, IonInput, IonButton, IonSelect, IonSelectOption} from '@ionic/react';
 import React, { useState, useEffect } from 'react';
 import { Contacts } from "@capacitor-community/contacts";
 import Card from '../components/Card';
 import Popup from '../components/Popup';
 import { add } from 'ionicons/icons';
-import './Home.css';
+import './PartyList.css';
 
 const Partylist: React.FC = () => {
+  const [selectedContacts, setSelectedContacts] = useState([]);
+  const [contactsList, setContactsList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [partyList, setPartyList] = useState<any[]>([]);
   const [party, setParty] = useState({
@@ -14,17 +16,9 @@ const Partylist: React.FC = () => {
     description: '',
     date: ''
   });
-  let contactsData = [];
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setParty((prevParty) => ({
-      ...prevParty,
-      [name]: value,
-    }));
-  };
-  const handleContacts = async () => {
+  
+  const openModal = async () => {
+    setIsModalOpen(true);
     const permissionState: PermissionStatus = await Contacts.requestPermissions();
     if (permissionState.contacts === 'granted') {
      console.log('Permission granted!!');
@@ -34,9 +28,23 @@ const Partylist: React.FC = () => {
       phones: true,
       image: true
       }});
-      console.log(contacts[0].contactId + "");
-      contactsData = contacts;
+      const formattedContacts = contacts.map((contact, index) => ({
+        id: contact.contactId,
+        name: contact.name?.display || 'UNKOWN',
+        phone: contact.phones?.[0]?.number || 'NO PHONE',
+      }));
+      setContactsList(formattedContacts);
+    
   }
+  const closeModal = () => setIsModalOpen(false);
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setParty((prevParty) => ({
+      ...prevParty,
+      [name]: value,
+    }));
+  };
+
 
   useEffect(() => {
     const storedPartyList = localStorage.getItem('partyList');
@@ -49,7 +57,7 @@ const Partylist: React.FC = () => {
   const handleSubmit = () => {
     console.log("handleSubmitAddingParties")
     if (party.name && party.description && party.date) {
-      const updatedPartyList = [...partyList, { ...party, attendees: [] }];
+      const updatedPartyList = [...partyList, { ...party, selectedContacts }];
       setPartyList(updatedPartyList);
       localStorage.setItem('partyList', JSON.stringify(updatedPartyList));
 
@@ -58,6 +66,7 @@ const Partylist: React.FC = () => {
         description: '',
         date: ''
       });
+      console.log(localStorage.getItem('partyList'));
     }
     setIsModalOpen(false);
   };
@@ -70,19 +79,26 @@ const Partylist: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <Card parties={partyList} /> 
-        <IonButton onClick={openModal}>
-          <IonIcon icon={add}></IonIcon>
-          Add Party
+        <Card parties={partyList}>
+          <IonButton onClick={openModal} >
+          <IonIcon slot='start' icon={add}></IonIcon>
+          Add
         </IonButton>
+          </Card> 
+        
         <Popup isOpen={isModalOpen} onClose={closeModal} title="Create Party" buttonText="Close Modal">
-          <IonInput name='name' placeholder='Name' value={party.name} onIonChange={handleChange}></IonInput>
-          <IonInput name='description' placeholder='Description' value={party.description} onIonChange={handleChange}></IonInput>
-          <IonInput type='date' name='date' placeholder='Date' value={party.date} onIonChange={handleChange}></IonInput>
-          <IonButton onClick={handleContacts}>Add People</IonButton>
+          <IonInput name='name' label='Name' value={party.name} onIonChange={handleChange}></IonInput>
+          <IonInput name='description' label='Description' value={party.description} onIonChange={handleChange}></IonInput>
+          <IonInput type='date' name='date' label='Date'  value={party.date} onIonChange={handleChange}></IonInput>
+            <IonSelect placeholder='Select attendees' multiple={true} onIonChange={(e) => setSelectedContacts(e.detail.value)}>
+              {contactsList.map((contact) => (
+                <IonSelectOption key={contact.id} value={contact} >
+                  {contact.name} - {contact.phone}
+                </IonSelectOption>
+              ))}
+            </IonSelect>
           <IonButton onClick={handleSubmit}>Add</IonButton>
         </Popup>
-
       </IonContent>
     </IonPage>
   );
