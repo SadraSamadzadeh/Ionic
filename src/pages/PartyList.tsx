@@ -4,7 +4,7 @@ import { Contacts } from "@capacitor-community/contacts";
 import Card from '../components/Card';
 import Popup from '../components/Popup';
 import './PartyList.css';
-
+import { CapacitorCalendar } from '@ebarooni/capacitor-calendar';
 const Partylist: React.FC = () => {
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [contactsList, setContactsList] = useState([]);
@@ -16,12 +16,18 @@ const Partylist: React.FC = () => {
     date: ''
   });
   
-  const openModal = async () => {
+  const openModal = async (info) => {
+      const permissionStauts: PermissionStatus = await CapacitorCalendar.requestFullCalendarAccess();
+      if (permissionStauts.calendar === 'granted') {
+        console.log('Permission granted!! for calendar now');
+      }
+      
     setIsModalOpen(true);
     const permissionState: PermissionStatus = await Contacts.requestPermissions();
     if (permissionState.contacts === 'granted') {
      console.log('Permission granted!!');
     }
+    const result = await CapacitorCalendar.requestFullCalendarAccess();
     const {contacts} = await Contacts.getContacts({projection: {
       name: true,
       phones: true,
@@ -60,8 +66,14 @@ const Partylist: React.FC = () => {
       const newParty = {id, ...party, selectedContacts};
       const updatedPartyList = [...partyList, newParty];
       setPartyList(updatedPartyList);
+      const dateNumber = new Date(party.date).getTime();
+      await CapacitorCalendar.createEvent({
+        title: newParty.name,
+        notes: newParty.description,
+        isAllDay: true,
+        startDate: dateNumber,
+        })
       localStorage.setItem('partyList', JSON.stringify(updatedPartyList));
-
       setParty({
         name: '',
         description: '',
