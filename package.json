@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@awesome-cordova-plugins/contacts": "^6.9.0",
+    "@byteowls/capacitor-sms": "^6.0.0",
     "@capacitor-community/contacts": "^6.0.6",
     "@capacitor/android": "6.1.2",
     "@capacitor/app": "6.0.1",

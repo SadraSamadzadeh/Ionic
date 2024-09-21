@@ -5,10 +5,15 @@ import Card from '../components/Card';
 import Popup from '../components/Popup';
 import './PartyList.css';
 import { CapacitorCalendar } from '@ebarooni/capacitor-calendar';
+import { SmsManager } from '@byteowls/capacitor-sms';
+
+
 const Partylist: React.FC = () => {
   const [selectedContacts, setSelectedContacts] = useState([]);
+  const [selectedParty, setSelectedParty] = useState<any[]>([]);
   const [contactsList, setContactsList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModal2Open, setIsModal2Open] = useState(false);
   const [partyList, setPartyList] = useState<any[]>([]);
   const [party, setParty] = useState({
     name: '',
@@ -41,7 +46,15 @@ const Partylist: React.FC = () => {
       setContactsList(formattedContacts);
     
   }
+  const openModal2 = () => {
+    setIsModal2Open(true);
+    partyList.map((party) => (
+      console.log(party.name)
+    ))
+  }
   const closeModal = () => setIsModalOpen(false);
+  const closeModal2 = () => setIsModal2Open(false);
+
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setParty((prevParty) => ({
@@ -56,11 +69,11 @@ const Partylist: React.FC = () => {
     if (storedPartyList) {
       setPartyList(JSON.parse(storedPartyList));
     }
+    console.log(partyList);
    
   }, []);
 
   const handleSubmit = async () => {
-    console.log("handleSubmitAddingParties")
     if (party.name && party.description && party.date) {
       const id = partyList.length + 1;
       const newParty = {id, ...party, selectedContacts};
@@ -83,6 +96,22 @@ const Partylist: React.FC = () => {
     }
     setIsModalOpen(false);
   };
+  const handleInvite = () => {
+    let number: string[];
+    number = [];
+    selectedParty.selectedContacts.map(contact => (
+      number.push(contact.phone)
+    ));
+    console.log(number);
+    SmsManager.send({
+    numbers: number,
+    text: "this is example and a test",
+    }).then(() => {
+
+    }).catch(error => {
+      console.error(error);
+    })
+  }
 
   return (
     <IonPage>
@@ -97,6 +126,9 @@ const Partylist: React.FC = () => {
         <IonButton className='add-button' onClick={openModal} >
           Add
         </IonButton>
+        <IonButton className='add-button' onClick={openModal2} >
+          Invite
+        </IonButton>
         <Popup isOpen={isModalOpen} onClose={closeModal} title="Create Party" buttonText="Close Modal">
           <IonInput name='name' label='Name' value={party.name} onIonChange={handleChange}></IonInput>
           <IonInput name='description' label='Description' value={party.description} onIonChange={handleChange}></IonInput>
@@ -109,6 +141,19 @@ const Partylist: React.FC = () => {
               ))}
             </IonSelect>
           <IonButton className='add-popup' onClick={handleSubmit}>Add</IonButton>
+        </Popup>
+        <Popup title="Select Party" buttonText="Close Modal" isOpen={isModal2Open} onClose={closeModal2}>
+        <IonSelect placeholder='select party' multiple={false} onIonChange={(e) => setSelectedParty(e.detail.value)}>
+        {partyList.map((party) => (
+            <IonSelectOption key={party.id} value={party}>
+              {party.name}
+            </IonSelectOption>
+          ))}
+        </IonSelect>
+          <IonButton onClick={handleInvite}>
+            Invite
+          </IonButton>
+              
         </Popup>
         
       </IonContent>
