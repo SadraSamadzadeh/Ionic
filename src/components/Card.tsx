@@ -32,7 +32,7 @@ function Card({ parties }) {
       </IonCardHeader>
       <IonCardContent>
         <IonList>
-        {parties.map((item, index) => (
+        {parties.map((item, index) =>  (
             <IonItem key={index}>
             <IonLabel>{item.name}</IonLabel>
             <IonButton href={'/details/' + (index + 1)} slot='end' className='forward-button'>Details</IonButton>
